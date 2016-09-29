@@ -46,22 +46,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mLongitudeText = (TextView) findViewById(R.id.textView2);
 
         buildGoogleApiClient();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        onStart();
     }
 
     public void myNewHandler(View view) {
         Log.d("Location Notification", "myNewHandler called");
-        onStart();
     }
 
     public void myHandler(View view) {
-        ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.isConnected()) {
             Log.d("Network", "I can talk to the world!");
             new DownloadWebpageTask().execute("http://services.swpc.noaa.gov/text/aurora-nowcast-map.txt");
-        }
-        else {
+        } else {
             Log.d("Network", "I am a hermit.");
         }
 
@@ -98,13 +100,29 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // applications that do not require a fine-grained location and that do not need location
         // updates. Gets the best and most recent location currently available, which may be null
         // in rare cases when a location is not available.
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            Log.d("Location Notification", "Didn't have permission");
+            return;
+        }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
-            mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
+            Log.d("Location Notification", "Lat: " + String.valueOf(mLastLocation.getLatitude()));
+
+                    mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
             mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
             Log.d("Location Notification", "onConnected was !null");
         } else {
             Log.d("Location Notification", "onConnected was null");
+            if(!mGoogleApiClient.isConnected()){mGoogleApiClient.connect();}
         }
     }
 
