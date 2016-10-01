@@ -1,5 +1,7 @@
 package com.example.michael.myapplication;
 
+import android.widget.TextView;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -39,5 +41,10 @@ public class auroraData {
             data[i] = stringArrayToIntArray(parts);
             line = reader.readLine();
         }
+    }
+
+    public void setTextView(String latitude, String longitude, TextView AuroraTextView) {
+        int prob = findAuroraProbablility(Double.parseDouble(latitude),Double.parseDouble(longitude));
+        AuroraTextView.setText("Aurora Probability: " + prob + "%");
     }
 }

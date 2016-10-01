@@ -17,31 +17,40 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Button"
+        android:text="Check Aurora"
         android:id="@+id/button"
-        android:layout_marginTop="173dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="myNewHandler" />
+        android:onClick="myHandler"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/textView"
+        android:text="Longitude: Unknown"
+        android:id="@+id/LatText"
+        android:layout_marginTop="68dp"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/button"
-        android:layout_toStartOf="@+id/button"
-        android:layout_marginTop="53dp" />
+        android:layout_alignRight="@+id/AuroraText"
+        android:layout_alignEnd="@+id/AuroraText" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/textView2"
-        android:layout_marginTop="37dp"
-        android:layout_below="@+id/textView"
-        android:layout_alignLeft="@+id/textView"
-        android:layout_alignStart="@+id/textView" />
+        android:text="Latititude: Unknown"
+        android:id="@+id/LongText"
+        android:layout_marginTop="31dp"
+        android:layout_below="@+id/LatText"
+        android:layout_alignRight="@+id/AuroraText"
+        android:layout_alignEnd="@+id/AuroraText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aurora Probablility: Unknown"
+        android:id="@+id/AuroraText"
+        android:layout_below="@+id/LongText"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="24dp" />
 
 </RelativeLayout>

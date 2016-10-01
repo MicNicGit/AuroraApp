@@ -4,11 +4,9 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,14 +16,12 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -34,39 +30,38 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     protected GoogleApiClient mGoogleApiClient;
     protected Location mLastLocation;
-    auroraData aurora = new auroraData();
+    auroraData aurora;
 
-    protected TextView mLatitudeText, mLongitudeText;
+    protected String latitude, longitude;
+    protected TextView mLatitudeText, mLongitudeText, aText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mLatitudeText = (TextView) findViewById(R.id.textView);
-        mLongitudeText = (TextView) findViewById(R.id.textView2);
+        mLatitudeText = (TextView) findViewById(R.id.LatText);
+        mLongitudeText = (TextView) findViewById(R.id.LongText);
+        aText = (TextView) findViewById(R.id.AuroraText);
+        aurora = new auroraData();
 
         buildGoogleApiClient();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
-        onStart();
-    }
-
-    public void myNewHandler(View view) {
-        Log.d("Location Notification", "myNewHandler called");
     }
 
     public void myHandler(View view) {
+        onStart();
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.isConnected()) {
             Log.d("Network", "I can talk to the world!");
             new DownloadWebpageTask().execute("http://services.swpc.noaa.gov/text/aurora-nowcast-map.txt");
+            aurora.setTextView(latitude,longitude,aText);
         } else {
             Log.d("Network", "I am a hermit.");
         }
-
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -115,10 +110,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
-            Log.d("Location Notification", "Lat: " + String.valueOf(mLastLocation.getLatitude()));
-
-                    mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
-            mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+            latitude = String.valueOf(mLastLocation.getLatitude());
+            longitude = String.valueOf(mLastLocation.getLongitude());
+            mLatitudeText.setText("Latitude: " + String.valueOf(mLastLocation.getLatitude()));
+            mLongitudeText.setText("Longitude: " + String.valueOf(mLastLocation.getLongitude()));
             Log.d("Location Notification", "onConnected was !null");
         } else {
             Log.d("Location Notification", "onConnected was null");
